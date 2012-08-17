@@ -28,8 +28,11 @@ cutarelease: versioncheck
 
 #---- test
 
+$(TAP):
+	npm install
+
 .PHONY: test
-test: $(TAP)
+test: | $(TAP)
 	TAP=1 $(TAP) test/*.test.js
 
 # Test will all node supported versions (presumes install locations I use on my machine).
