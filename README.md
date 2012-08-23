@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/trentm/node-csvrow.png)](http://travis-ci.org/trentm/node-csvrow)
 This is a small node module for parsing individual CSV rows. This can be useful
 if you have, say, a user-provided string that is a "comma-separated" set of
 strings. Simply splitting on commas doesn't quite suffice.
