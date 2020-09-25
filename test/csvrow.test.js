@@ -6,85 +6,94 @@ var format = require('util').format;
 var test = require('tap').test;
 var csvrow = require('../lib/csvrow');
 
-
-
 test('csvrow.stringify', function onTest(t) {
-  var samples = [
-    ['a,b,c', ['a', 'b', 'c']],
-    ['a', ['a']],
+    var samples = [
+        ['a,b,c', ['a', 'b', 'c']],
+        ['a', ['a']],
 
-    // Quoting
-    ['"a b"', ['a b']],
-    ['"a "" b"', ['a " b']],
-    ['"a ""b"""', ['a "b"']],
-    ['"a b",c,"d "', ['a b', 'c', 'd ']],
-    ['" a "', [' a ']],
+        // Quoting
+        ['"a b"', ['a b']],
+        ['"a "" b"', ['a " b']],
+        ['"a ""b"""', ['a "b"']],
+        ['"a b",c,"d "', ['a b', 'c', 'd ']],
+        ['" a "', [' a ']],
 
-    // Gross edge cases.
-    ['', []],
-    [',a', ['', 'a']],
-    [',', ['', '']]
-  ];
+        // Gross edge cases.
+        ['', []],
+        [',a', ['', 'a']],
+        [',', ['', '']]
+    ];
 
-  samples.forEach(function onSamples(samples) {
-    t.equal(samples[0], csvrow.stringify(samples[1]),
-      format('csvrow.stringify(%s) => \'%s\'',
-             JSON.stringify(samples[1]),
-             samples[0]));
-  });
-  t.end();
+    samples.forEach(function onSamples(samples) {
+        t.equal(
+            samples[0],
+            csvrow.stringify(samples[1]),
+            format(
+                "csvrow.stringify(%s) => '%s'",
+                JSON.stringify(samples[1]),
+                samples[0]
+            )
+        );
+    });
+    t.end();
 });
 
-
 test('csvrow.normalize', function onTest(t) {
-  var samples = [
-    ['a,,', 'a'],
-    [' a ', 'a'],
-    ['a, b, c', 'a,b,c'],
-    ['a, b, c," d "', 'a,b,c," d "'],
-  ];
+    var samples = [
+        ['a,,', 'a'],
+        [' a ', 'a'],
+        ['a, b, c', 'a,b,c'],
+        ['a, b, c," d "', 'a,b,c," d "']
+    ];
 
-  samples.forEach(function onSamples(samples) {
-    t.equal(csvrow.normalize(samples[0]), samples[1],
-      format('csvrow.normalize(\'%s\') => \'%s\'',
-             samples[0], samples[1]));
-  });
-  t.end();
-
-})
+    samples.forEach(function onSamples(samples) {
+        t.equal(
+            csvrow.normalize(samples[0]),
+            samples[1],
+            format("csvrow.normalize('%s') => '%s'", samples[0], samples[1])
+        );
+    });
+    t.end();
+});
 
 test('csvrow.parse', function onTest(t) {
-  var p = csvrow.parse;
+    var p = csvrow.parse;
 
-  var samples = [
-    ['a,b,c', ['a', 'b', 'c']],
-    ['a', ['a']],
+    var samples = [
+        ['a,b,c', ['a', 'b', 'c']],
+        ['a', ['a']],
 
-    // Trimming
-    [' a', ['a']],
-    ['a ', ['a']],
-    [' a ', ['a']],
-    ['\t a\t', ['a']],
+        // Trimming
+        [' a', ['a']],
+        ['a ', ['a']],
+        [' a ', ['a']],
+        ['\t a\t', ['a']],
 
-    // Quoting
-    ['"a"', ['a']],
-    ['"a b"', ['a b']],
-    ['"a "" b"', ['a " b']],
-    ['"a ""b"""', ['a "b"']],
-    ['"a b",c ,"d "', ['a b', 'c', 'd ']],
-    ['" a "', [' a ']],
+        // Quoting
+        ['"a"', ['a']],
+        ['"a b"', ['a b']],
+        ['"a "" b"', ['a " b']],
+        ['"a ""b"""', ['a "b"']],
+        ['"a b",c ,"d "', ['a b', 'c', 'd ']],
+        ['" a "', [' a ']],
 
-    // Gross edge cases.
-    ['', []],
-    [',a', ['', 'a']],
-    [',', ['', '']],
-    ['""', ['']]
-  ];
+        // Gross edge cases.
+        ['', []],
+        [',a', ['', 'a']],
+        [',', ['', '']],
+        ['""', ['']]
+    ];
 
-  samples.forEach(function onSamples(samples) {
-    t.deepEqual(p(samples[0]), samples[1],
-      format('csvrow.parse(\'%s\') => %s', samples[0],
-        JSON.stringify(samples[1])));
-  });
-  t.end();
+    samples.forEach(function onSamples(samples) {
+        t.deepEqual(
+            p(samples[0]),
+            samples[1],
+            format(
+                "csvrow.parse('%s') => %s",
+                samples[0],
+                JSON.stringify(samples[1])
+            )
+        );
+    });
+    t.end();
 });
