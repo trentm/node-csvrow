@@ -1,70 +1,58 @@
 
-#---- Tools
-
-TAP := ./node_modules/.bin/tap
-
-
-#---- Files
-
-JSSTYLE_FILES := $(shell find lib test -name "*.js")
-
-
-
-#---- Targets
-
+.PHONY: all
 all:
-
-# Ensure all version-carrying files have the same version.
-.PHONY: versioncheck
-versioncheck:
-	[[ `cat package.json | json version` == `grep '^## ' CHANGES.md | head -1 | awk '{print $$3}'` ]]
-	[[ `cat package.json | json version` == `grep '^var VERSION' lib/csvrow.js | awk -F"'" '{print $$2}'` ]]
-	@echo Version check ok.
-
-.PHONY: cutarelease
-cutarelease: versioncheck
-	./tools/cutarelease.py -p csvrow -f package.json -f lib/csvrow.js
-
-
-#---- test
-
-$(TAP):
 	npm install
 
+.PHONY: clean
+clean:
+	rm -rf foobar-*.tgz
+
+.PHONY: distclean
+distclean: clean
+	rm -rf node_modules
+
 .PHONY: test
-test: | $(TAP)
-	TAP=1 $(TAP) test/*.test.js
+test:
+	npm test
 
-# Test will all node supported versions (presumes install locations I use on my machine).
-.PHONY: testall
-testall: test08 test06 test09
+.PHONY: lint
+lint:
+	npm run lint
 
-.PHONY: test09
-test09:
-	@echo "# Test node 0.9.x (with node `$(HOME)/opt/node-0.9/bin/node --version`)"
-	PATH="$(HOME)/opt/node-0.9/bin:$(PATH)" TAP=1 $(TAP) test/*.test.js
-
-.PHONY: test08
-test08:
-	@echo "# Test node 0.8.x (with node `$(HOME)/opt/node-0.8/bin/node --version`)"
-	PATH="$(HOME)/opt/node-0.8/bin:$(PATH)" TAP=1 $(TAP) test/*.test.js
-
-.PHONY: test06
-test06:
-	@echo "# Test node 0.6.x (with node `$(HOME)/opt/node-0.6/bin/node --version`)"
-	PATH="$(HOME)/opt/node-0.6/bin:$(PATH)" TAP=1 $(TAP) test/*.test.js
-
-
-#---- check
-
-.PHONY: check-jsstyle
-check-jsstyle: $(JSSTYLE_FILES)
-	./tools/jsstyle -o indent=2,doxygen,unparenthesized-return=0,blank-after-start-comment=0,leading-right-paren-ok $(JSSTYLE_FILES)
+.PHONY: fmt
+fmt:
+	npm run fmt
 
 .PHONY: check
-check: check-jsstyle
+check:: check-version check-eslint
 	@echo "Check ok."
 
-.PHONY: prepush
-prepush: check testall
-	@echo "Okay to push."
+.PHONY: check-eslint
+check-eslint:
+	npm run check
+
+# Ensure CHANGES.md and package.json have the same version.
+.PHONY: check-version
+check-version:
+	@echo version is: $(shell cat package.json | json version)
+	[[ v`cat package.json | json version` == `grep '^## ' CHANGES.md | head -2 | tail -1 | awk '{print $$2}'` ]]
+
+.PHONY: cutarelease
+cutarelease: check
+	[[ -z `git status --short` ]]  # If this fails, the working dir is dirty.
+	@which json 2>/dev/null 1>/dev/null && \
+	    ver=$(shell json -f package.json version) && \
+	    name=$(shell json -f package.json name) && \
+	    publishedVer=$(shell npm view -j $(shell json -f package.json name)@$(shell json -f package.json version) version 2>/dev/null) && \
+	    if [[ -n "$$publishedVer" ]]; then \
+		echo "error: $$name@$$ver is already published to npm"; \
+		exit 1; \
+	    fi && \
+	    echo "** Are you sure you want to tag and publish $$name@$$ver to npm?" && \
+	    echo "** Enter to continue, Ctrl+C to abort." && \
+	    read
+	ver=$(shell cat package.json | json version) && \
+	    date=$(shell date -u "+%Y-%m-%d") && \
+	    git tag -a "v$$ver" -m "version $$ver ($$date)" && \
+	    git push origin "v$$ver" && \
+	    npm publish

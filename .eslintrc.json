@@ -1,0 +1,36 @@
+// Trent's eslint rules (eslint v7).
+// `./node_modules/.bin/eslint --print-config *.js` to print calculated config.
+{
+    "plugins": [
+        "prettier"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "script",
+        "ecmaFeatures": {
+        }
+    },
+    "env": {
+        "node": true
+    },
+    "rules": {
+        // Trent's personal lint preferences beyond "eslint:recommended".
+        "curly": ["error", "all"],
+        "func-names": ["error", "always"],
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "all",
+                "caughtErrors": "all",
+                "argsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_"
+            }
+        ]
+    }
+}

@@ -8,7 +8,7 @@ var csvrow = require('../lib/csvrow');
 
 
 
-test('csvrow.stringify', function (t) {
+test('csvrow.stringify', function onTest(t) {
   var samples = [
     ['a,b,c', ['a', 'b', 'c']],
     ['a', ['a']],
@@ -26,7 +26,7 @@ test('csvrow.stringify', function (t) {
     [',', ['', '']]
   ];
 
-  samples.forEach(function (samples) {
+  samples.forEach(function onSamples(samples) {
     t.equal(samples[0], csvrow.stringify(samples[1]),
       format('csvrow.stringify(%s) => \'%s\'',
              JSON.stringify(samples[1]),
@@ -36,7 +36,7 @@ test('csvrow.stringify', function (t) {
 });
 
 
-test('csvrow.normalize', function (t) {
+test('csvrow.normalize', function onTest(t) {
   var samples = [
     ['a,,', 'a'],
     [' a ', 'a'],
@@ -44,7 +44,7 @@ test('csvrow.normalize', function (t) {
     ['a, b, c," d "', 'a,b,c," d "'],
   ];
 
-  samples.forEach(function (samples) {
+  samples.forEach(function onSamples(samples) {
     t.equal(csvrow.normalize(samples[0]), samples[1],
       format('csvrow.normalize(\'%s\') => \'%s\'',
              samples[0], samples[1]));
@@ -53,7 +53,7 @@ test('csvrow.normalize', function (t) {
 
 })
 
-test('csvrow.parse', function (t) {
+test('csvrow.parse', function onTest(t) {
   var p = csvrow.parse;
 
   var samples = [
@@ -81,7 +81,7 @@ test('csvrow.parse', function (t) {
     ['""', ['']]
   ];
 
-  samples.forEach(function (samples) {
+  samples.forEach(function onSamples(samples) {
     t.deepEqual(p(samples[0]), samples[1],
       format('csvrow.parse(\'%s\') => %s', samples[0],
         JSON.stringify(samples[1])));

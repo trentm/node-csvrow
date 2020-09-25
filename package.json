@@ -1,22 +1,35 @@
 {
   "name": "csvrow",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "parse a CSV row string",
   "author": "Trent Mick <trentm@gmail.com> (http://trentm.com)",
   "main": "./lib/csvrow.js",
-
   "repository": {
     "type": "git",
     "url": "git://github.com/trentm/node-csvrow.git"
   },
-  "engines": ["node >=0.6.0"],
-  "keywords": ["csv", "parse"],
-
-  "devDependencies": {
-    "tap": "0.2.0"
+  "engines": {
+    "node": ">=10.x"
   },
-
+  "keywords": [
+    "csv",
+    "parse"
+  ],
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "tap test/*.test.js",
+    "check": "eslint lib test",
+    "lint": "eslint --rule 'prettier/prettier: off' lib test",
+    "fmt": "eslint --fix lib test"
+  },
+  "devDependencies": {
+    "eslint": "^7.3.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.0.5",
+    "tap": "^14.x"
   }
 }
