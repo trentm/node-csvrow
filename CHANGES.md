@@ -1,8 +1,8 @@
 # csvrow Changelog
 
-## 0.1.1 (not yet released)
+## 0.2.0
 
-(nothing yet)
+- Support specifying other delimiters than just comma.
 
 
 ## 0.1.0
