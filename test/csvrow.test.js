@@ -85,7 +85,7 @@ test('csvrow.parse', function onTest(t) {
     ];
 
     samples.forEach(function onSamples(samples) {
-        t.deepEqual(
+        t.same(
             p(samples[0]),
             samples[1],
             format(
